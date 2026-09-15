@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Граматика інтерфейсу — польовий довідник із сучасного веб-дизайну</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #edeff3;
+    --paper-2: #e2e5ec;
+    --surface: #ffffff;
+    --ink: #14151c;
+    --ink-soft: #52545f;
+    --indigo: #4a3aff;
+    --lime: #d6ff3d;
+    --line: #c7cbd6;
+    --radius: 3px;
+    --maxw: 1180px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before{
+    content:"";
+    position: fixed;
+    inset:0;
+    pointer-events:none;
+    opacity: 0.035;
+    z-index: 999;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection{ background: var(--lime); color: var(--ink); }
+
+  a{ color: inherit; }
+
+  h1,h2,h3{
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  p{ margin: 0 0 1em; max-width: 62ch; color: var(--ink-soft); }
+  p:last-child{ margin-bottom: 0; }
+
+  :focus-visible{
+    outline: 2px solid var(--indigo);
+    outline-offset: 3px;
+  }
+
+  button{
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    padding: 0.6em 1.1em;
+    border-radius: var(--radius);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  button:hover{ background: var(--ink); color: var(--paper); }
+
+  /* ---------- layout ---------- */
+  .layout{
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    max-width: var(--maxw);
+    margin: 0 auto;
+  }
+
+  .index{
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4em;
+    padding: 2rem 1rem 2rem 1.5rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .index-mark{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 1.6rem;
+    line-height: 1.3;
+  }
+
+  .index-link{
+    text-decoration: none;
+    display: flex;
+    gap: 0.6em;
+    align-items: baseline;
+    padding: 0.35em 0;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    border-left: 2px solid transparent;
+    padding-left: 0.7em;
+    margin-left: -0.9em;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .index-link span.n{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    color: var(--line);
+  }
+  .index-link.is-active{
+    color: var(--ink);
+    border-left-color: var(--indigo);
+  }
+  .index-link.is-active span.n{ color: var(--indigo); }
+  .index-link:hover{ color: var(--ink); }
+
+  main{ min-width: 0; }
+
+  section{
+    padding: 5.5rem 3rem;
+    border-bottom: 1px solid var(--line);
+  }
+  section:last-of-type{ border-bottom: none; }
+
+  .kicker{
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    margin-bottom: 2.2rem;
+  }
+  .kicker .num{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    color: var(--indigo);
+    border: 1px solid var(--indigo);
+    border-radius: 50%;
+    width: 1.8em;
+    height: 1.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .kicker h2{ font-size: clamp(1.4rem, 2.2vw, 1.9rem); }
+
+  .section-body{
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 900px){ .section-body{ grid-template-columns: 1fr; } }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 3rem 6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 92vh;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-blob{
+    position: absolute;
+    top: 0; left: 0;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--indigo), transparent 70%);
+    opacity: 0.35;
+    filter: blur(10px);
+    pointer-events: none;
+    will-change: transform;
+  }
+  .hero-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-wordmark{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .hero-meta{
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    max-width: 22ch;
+  }
+  .hero-title{
+    position: relative;
+    z-index: 1;
+    font-size: clamp(2.6rem, 8vw, 6.2rem);
+    line-height: 0.98;
+    margin: 2.5rem 0 1.6rem;
+    max-width: 14ch;
+  }
+  .hero-sub{
+    position: relative;
+    z-index: 1;
+    font-size: 1.15rem;
+    max-width: 46ch;
+  }
+
+  /* ---------- typography section ---------- */
+  .type-specimen{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1.02;
+    margin-bottom: 1.5rem;
+  }
+  .type-scale-row{
+    display: flex;
+    align-items: baseline;
+    gap: 1em;
+    border-top: 1px solid var(--line);
+    padding: 0.6em 0;
+  }
+  .type-scale-row .label{ width: 5em; flex-shrink: 0; font-size: 0.8rem; color: var(--ink-soft); }
+  .type-scale-row .sample{ font-family: 'Space Grotesk', sans-serif; }
+
+  /* ---------- color section ---------- */
+  .swatches{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+  .swatch{
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: flex-end;
+    padding: 0.7rem;
+    cursor: pointer;
+    background: none;
+    color: var(--ink);
+  }
+  .swatch-feedback{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    background: rgba(255,255,255,0.75);
+    padding: 0.15em 0.4em;
+    border-radius: 2px;
+  }
+  .swatch.dark .swatch-feedback{ background: rgba(0,0,0,0.3); color: #fff; }
+
+  /* ---------- grid demo section ---------- */
+  .grid-demo{
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 1.5rem;
+    min-height: 260px;
+  }
+  .grid-demo-shapes{
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 8px;
+    height: 220px;
+  }
+  .gshape{ background: var(--indigo); border-radius: 2px; }
+  .gshape.a{ grid-column: 1 / 8; grid-row: 1 / 3; background: var(--ink); }
+  .gshape.b{ grid-column: 8 / 13; grid-row: 1 / 2; background: var(--lime); }
+  .gshape.c{ grid-column: 8 / 13; grid-row: 2 / 4; background: var(--indigo); }
+  .gshape.d{ grid-column: 1 / 5; grid-row: 3 / 4; background: var(--paper-2); border: 1px solid var(--line); }
+  .grid-overlay{
+    position: absolute;
+    inset: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 8px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 0;
+  }
+  .grid-overlay span{ background: rgba(74,58,255,0.06); border-left: 1px dashed rgba(74,58,255,0.4); border-right: 1px dashed rgba(74,58,255,0.4); }
+  .grid-demo.show-grid .grid-overlay{ opacity: 1; }
+  .grid-controls{ margin-top: 1rem; }
+
+  /* ---------- whitespace section ---------- */
+  .space-demo{
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .space-demo-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.4rem 2rem;
+  }
+  .space-demo-row + .space-demo-row{ border-top: 1px solid var(--line); }
+  .space-demo-row.tight{ padding: 0.6rem 2rem; }
+  .space-demo-label{ font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; }
+  .space-demo-tag{ font-size: 0.78rem; color: var(--ink-soft); }
+
+  /* ---------- motion section ---------- */
+  .motion-row{
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .motion-chip{
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 0.9em 1.3em;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    transition: transform 0.25s cubic-bezier(.2,.8,.2,1), border-color 0.25s ease, background 0.25s ease;
+  }
+  .motion-chip:hover{
+    transform: translateY(-6px);
+    border-color: var(--indigo);
+    background: var(--paper-2);
+  }
+
+  /* ---------- accessibility section ---------- */
+  .contrast-demo{
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 1.6rem;
+  }
+  .contrast-demo p{ color: var(--ink); transition: color 0.2s ease; }
+  .contrast-demo.low-contrast p{ color: #b9bcc6; }
+  .contrast-demo .demo-btn-row{ margin-top: 1rem; display:flex; gap: 0.6rem; }
+
+  /* ---------- footer ---------- */
+  footer{
+    padding: 3rem 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  @media (max-width: 860px){
+    .layout{ grid-template-columns: 1fr; }
+    .index{
+      position: sticky;
+      height: auto;
+      flex-direction: row;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding: 1rem 1.2rem;
+      background: var(--paper);
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      z-index: 10;
+      gap: 1.2em;
+    }
+    .index-mark{ display: none; }
+    .index-link{ white-space: nowrap; margin-left: 0; padding-left: 0; border-left: none; border-bottom: 2px solid transparent; }
+    .index-link.is-active{ border-left-color: transparent; border-bottom-color: var(--indigo); }
+    section{ padding: 3.5rem 1.4rem; }
+    .hero{ padding: 2.5rem 1.4rem 4rem; min-height: auto; }
+    .hero-blob{ width: 260px; height: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="index" aria-label="Розділи довідника">
+    <div class="index-mark">ГРАМАТИКА<br>ІНТЕРФЕЙСУ</div>
+    <a class="index-link" href="#typography"><span class="n">01</span>Типографіка</a>
+    <a class="index-link" href="#color"><span class="n">02</span>Колір</a>
+    <a class="index-link" href="#grid"><span class="n">03</span>Сітка</a>
+    <a class="index-link" href="#space"><span class="n">04</span>Простір</a>
+    <a class="index-link" href="#motion"><span class="n">05</span>Рух</a>
+    <a class="index-link" href="#access"><span class="n">06</span>Доступність</a>
+  </nav>
+
+  <main>
+    <header class="hero" id="hero">
+      <div class="hero-blob"></div>
+      <div class="hero-top">
+        <div class="hero-wordmark">Граматика інтерфейсу</div>
+        <div class="hero-meta">Польовий довідник із шести принципів, на яких тримається сучасний веб-дизайн</div>
+      </div>
+      <h1 class="hero-title">Дизайн — це мова. Ось її граматика.</h1>
+      <p class="hero-sub">Кожен розділ пояснює один принцип і водночас демонструє його на собі: типографіка написана типографікою, сітка показує саму сітку. Гортайте вниз або скористайтесь індексом ліворуч.</p>
+    </header>
+
+    <section id="typography">
+      <div class="kicker"><span class="num">01</span><h2>Типографіка</h2></div>
+      <div class="section-body">
+        <div>
+          <div class="type-specimen">Aa Бб Яя</div>
+          <p>Шрифт — головний носій характеру сторінки. Тут використано лише дві гарнітури: Space Grotesk для заголовків і Inter для тексту — цього достатньо, якщо в кожної є чітка роль.</p>
+        </div>
+        <div>
+          <div class="type-scale-row"><span class="label">120 / 0.98</span><span class="sample" style="font-size:1.6rem">Заголовок першого рівня</span></div>
+          <div class="type-scale-row"><span class="label">44 / 1.05</span><span class="sample" style="font-size:1.3rem">Заголовок розділу</span></div>
+          <div class="type-scale-row"><span class="label">17 / 1.6</span><span class="sample" style="font-family:Inter;font-size:1rem">Основний текст читається довше, тож рядок тримаємо коротшим за 80 символів, а міжрядковий інтервал — вільнішим.</span></div>
+          <div class="type-scale-row"><span class="label">14 / 1.4</span><span class="sample" style="font-family:Inter;font-size:0.82rem;color:var(--ink-soft)">Дрібний підпис для приміток і метаданих</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="color">
+      <div class="kicker"><span class="num">02</span><h2>Колір</h2></div>
+      <div class="section-body">
+        <div>
+          <p>Палітра з чотирьох ролей тримає дисципліну: папір і чорнило для тексту, індиго — єдиний активний акцент, лайм — рідкісний спалах уваги. Натисніть на будь-який зразок, щоб скопіювати його код.</p>
+        </div>
+        <div class="swatches">
+          <button class="swatch dark" style="background:#14151c" data-hex="#14151C"><span class="swatch-feedback">#14151C</span></button>
+          <button class="swatch" style="background:#edeff3" data-hex="#EDEFF3"><span class="swatch-feedback">#EDEFF3</span></button>
+          <button class="swatch dark" style="background:#4a3aff" data-hex="#4A3AFF"><span class="swatch-feedback" style="color:#fff;background:rgba(0,0,0,.25)">#4A3AFF</span></button>
+          <button class="swatch" style="background:#d6ff3d" data-hex="#D6FF3D"><span class="swatch-feedback">#D6FF3D</span></button>
+          <button class="swatch" style="background:#c7cbd6" data-hex="#C7CBD6"><span class="swatch-feedback">#C7CBD6</span></button>
+          <button class="swatch" style="background:#ffffff" data-hex="#FFFFFF"><span class="swatch-feedback">#FFFFFF</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="grid">
+      <div class="kicker"><span class="num">03</span><h2>Сітка та композиція</h2></div>
+      <div class="section-body">
+        <div>
+          <p>Дванадцятиколонкова сітка не про симетрію — вона про свідомий дисбаланс. Великий блок ліворуч урівноважує два менших праворуч. Увімкніть сітку, щоб побачити структуру під композицією.</p>
+          <div class="grid-controls"><button class="grid-toggle">Показати сітку</button></div>
+        </div>
+        <div class="grid-demo">
+          <div class="grid-overlay">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="grid-demo-shapes">
+            <div class="gshape a"></div>
+            <div class="gshape b"></div>
+            <div class="gshape c"></div>
+            <div class="gshape d"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="space">
+      <div class="kicker"><span class="num">04</span><h2>Простір і ієрархія</h2></div>
+      <div class="section-body">
+        <div>
+          <p>Порожній простір — не порожнеча, а пауза, яка каже оку, що важливо. Щільний рядок читається як другорядний, вільний — як головний, навіть без зміни розміру шрифту.</p>
+        </div>
+        <div class="space-demo">
+          <div class="space-demo-row tight"><span class="space-demo-label" style="font-size:0.85rem">Другорядний пункт</span><span class="space-demo-tag">щільно</span></div>
+          <div class="space-demo-row tight"><span class="space-demo-label" style="font-size:0.85rem">Ще один пункт списку</span><span class="space-demo-tag">щільно</span></div>
+          <div class="space-demo-row"><span class="space-demo-label" style="font-size:1.4rem">Головна дія сторінки</span><span class="space-demo-tag">вільно</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="motion">
+      <div class="kicker"><span class="num">05</span><h2>Рух</h2></div>
+      <div class="section-body">
+        <div>
+          <p>Рух виправданий лише як відповідь на дію людини — розкриття, підтвердження, наведення курсора. Один продуманий момент важить більше за анімацію на кожному елементі. Наведіть курсор на плашки.</p>
+        </div>
+        <div class="motion-row">
+          <div class="motion-chip">Наведення</div>
+          <div class="motion-chip">Підтвердження</div>
+          <div class="motion-chip">Розкриття</div>
+          <div class="motion-chip">Перехід</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="access">
+      <div class="kicker"><span class="num">06</span><h2>Доступність</h2></div>
+      <div class="section-body">
+        <div>
+          <p>Якісний дизайн однаково працює з клавіатурою, при слабкому зорі та з увімкненим «зменшити рух». Спробуйте натиснути Tab на цій сторінці або перемкнути контраст нижче.</p>
+        </div>
+        <div class="contrast-demo">
+          <p>Цей текст має контраст, достатній для комфортного читання за стандартом WCAG.</p>
+          <div class="demo-btn-row">
+            <button class="contrast-toggle">Симулювати низький контраст</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>Граматика інтерфейсу — довідник-демонстрація, 2026</span>
+      <span>Кожен розділ пояснює принцип і сам є його прикладом</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // scrollspy
+  const links = document.querySelectorAll('.index-link');
+  const sections = document.querySelectorAll('main section[id]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('is-active'));
+        const link = document.querySelector('.index-link[href="#' + entry.target.id + '"]');
+        if (link) link.classList.add('is-active');
+      }
+    });
+  }, { rootMargin: '-35% 0px -55% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // hero cursor blob
+  const hero = document.getElementById('hero');
+  const blob = document.querySelector('.hero-blob');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let mx = 120, my = 60, bx = 120, by = 60;
+
+  if (!reduceMotion && hero && blob) {
+    hero.addEventListener('pointermove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      mx = e.clientX - rect.left;
+      my = e.clientY - rect.top;
+    });
+    (function animateBlob() {
+      bx += (mx - bx) * 0.06;
+      by += (my - by) * 0.06;
+      blob.style.transform = 'translate(' + (bx - 210) + 'px, ' + (by - 210) + 'px)';
+      requestAnimationFrame(animateBlob);
+    })();
+  }
+
+  // color swatch copy
+  document.querySelectorAll('.swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      const hex = sw.dataset.hex;
+      if (navigator.clipboard) navigator.clipboard.writeText(hex).catch(() => {});
+      const label = sw.querySelector('.swatch-feedback');
+      const original = hex;
+      label.textContent = 'Скопійовано';
+      setTimeout(() => { label.textContent = original; }, 1100);
+    });
+  });
+
+  // grid toggle
+  const gridToggle = document.querySelector('.grid-toggle');
+  const gridDemo = document.querySelector('.grid-demo');
+  gridToggle.addEventListener('click', () => {
+    gridDemo.classList.toggle('show-grid');
+    gridToggle.textContent = gridDemo.classList.contains('show-grid') ? 'Сховати сітку' : 'Показати сітку';
+  });
+
+  // contrast toggle
+  const contrastToggle = document.querySelector('.contrast-toggle');
+  const contrastDemo = document.querySelector('.contrast-demo');
+  contrastToggle.addEventListener('click', () => {
+    contrastDemo.classList.toggle('low-contrast');
+    contrastToggle.textContent = contrastDemo.classList.contains('low-contrast')
+      ? 'Повернути нормальний контраст'
+      : 'Симулювати низький контраст';
+  });
+</script>
+</body>
+</html>
